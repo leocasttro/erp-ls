@@ -9,7 +9,7 @@ export class Tenant extends BaseEntity {
     super(partial.id, partial.createdAt, partial.updatedAt);
     Object.assign(this, partial);
 
-    this.isActive ??= true;
+    this.isActive = partial.isActive ?? true;
   }
 
   deactivate(): void {
