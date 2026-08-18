@@ -1,23 +1,23 @@
-{                                                                              
-  "compilerOptions": {                                                         
-    "module": "commonjs",                                                      
-    "target": "ES2022",                                                        
-    "esModuleInterop": true,                                                   
-    "isolatedModules": true,                                                   
-    "declaration": true,                                                       
-    "removeComments": true,                                                    
-    "emitDecoratorMetadata": true,                                             
-    "experimentalDecorators": true,                                            
-    "allowSyntheticDefaultImports": true,                                      
-    "sourceMap": true,                                                         
-    "outDir": "./dist", 
-                                                           
-    "ignoreDeprecations": "6.0",                                                                   
-    "baseUrl": "./",                                                           
-    "paths": {                                                                 
-      "@/*": ["src/*"]                                                         
-    },                                                                         
-    
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
     "incremental": true,
     "skipLibCheck": true,
     "strict": true,
