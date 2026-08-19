@@ -28,15 +28,27 @@ export class CreateEntityDefinitionUseCase {
       tenantId: dto.tenantId,
       technicalName: dto.technicalName,
       displayName: dto.displayName,
+      tableName: dto.tableName,
+      moduleCategory: dto.moduleCategory,
+      isCustom: dto.isCustom,
       isAuditable: dto.isAuditable,
+      hasWorkflow: dto.hasWorkflow,
     });
 
     for (const fieldDto of dto.fields) {
       const field = new FieldDefinition({
         technicalName: fieldDto.technicalName,
         label: fieldDto.label,
-        type: fieldDto.type,
+        fieldType: fieldDto.fieldType,
         isRequired: fieldDto.isRequired,
+        isUnique: fieldDto.isUnique,
+        isIndexed: fieldDto.isIndexed,
+        isCalculated: fieldDto.isCalculated,
+        formulaExpression: fieldDto.formulaExpression,
+        defaultValue: fieldDto.defaultValue,
+        validationRules: fieldDto.validationRules,
+        lookupEntityId: fieldDto.lookupEntityId,
+        onDeleteAction: fieldDto.onDeleteAction,
       });
 
       newEntity.addField(field);
