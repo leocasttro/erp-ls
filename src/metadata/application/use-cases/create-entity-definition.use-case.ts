@@ -58,29 +58,29 @@ export class CreateEntityDefinitionUseCase {
 
     if (dto.formLayouts) {
       for (const layoutDto of dto.formLayouts) {
-        newEntity.formLayouts.push(
-          new FormLayout({
-            tenantId: dto.tenantId,
-            name: layoutDto.name,
-            isDefault: layoutDto.isDefault ?? false,
-            layoutConfig: layoutDto.layoutConfig,
-          }),
-        );
+        const layout = new FormLayout({
+          tenantId: dto.tenantId,
+          name: layoutDto.name,
+          isDefault: layoutDto.isDefault ?? false,
+          layoutConfig: layoutDto.layoutConfig,
+        });
+
+        newEntity.addFormLayout(layout);
       }
     }
 
     if (dto.relations) {
       for (const relDto of dto.relations) {
-        newEntity.sourceRelations.push(
-          new EntityRelation({
-            tenantId: dto.tenantId,
-            targetEntityId: relDto.targetEntityId,
-            relationType: relDto.relationType,
-            foreignKeyName: relDto.foreignKeyName,
-            cascadeDelete: relDto.cascadeDelete,
-            label: relDto.label,
-          }),
-        );
+        const relations = new EntityRelation({
+          tenantId: dto.tenantId,
+          targetEntityId: relDto.targetEntityId,
+          relationType: relDto.relationType,
+          foreignKeyName: relDto.foreignKeyName,
+          cascadeDelete: relDto.cascadeDelete,
+          label: relDto.label,
+        });
+
+        newEntity.addRelation(relations);
       }
     }
 

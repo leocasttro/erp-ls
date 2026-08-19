@@ -40,4 +40,24 @@ export class EntityDefinition extends BaseEntity {
     this.fields.push(field);
     this.markAsUpdated();
   }
+
+  addFormLayout(layout: FormLayout): void {
+    if (layout.isDefault && this.formLayouts.some((l) => l.isDefault)) {
+      throw new Error('Já existe um formulário padrão para esta entidade');
+    }
+
+    this.formLayouts.push(layout);
+    this.markAsUpdated();
+  }
+
+  addRelation(relation: EntityRelation): void {
+    const relationExists = this.sourceRelations.find(
+      (r) => r.foreignKeyName === relation.foreignKeyName,
+    );
+
+    if (relationExists) throw new Error(`A relação '${relation.foreignKeyName}' já existe.`);
+
+    this.sourceRelations.push(relation);
+    this.markAsUpdated();
+  }
 }
