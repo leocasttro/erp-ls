@@ -8,4 +8,5 @@ export interface EntityDefinitionRepository {
     technicalName: string,
     tenantId: string,
   ): Promise<EntityDefinition | null>;
+  list(tenantId: string): Promise<EntityDefinition[]>;
 }

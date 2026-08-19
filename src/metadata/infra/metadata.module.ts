@@ -8,6 +8,8 @@ import { EntityDefinitionModel } from './persistence/typeorm/entity-definition.m
 import { FieldDefinitionModel } from './persistence/typeorm/field-definition.model';
 import { FormLayoutModel } from './persistence/typeorm/form-layout.model';
 import { EntityRelationModel } from './persistence/typeorm/entity-relation.model';
+import { GetEntityDefinitionuseCase } from '../application/use-cases/get-entity-definition.use-case';
+import { ListEntityDefinitionUseCase } from '../application/use-cases/list-entity-definition.use-case';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { EntityRelationModel } from './persistence/typeorm/entity-relation.model
   controllers: [EntityDefinitionController],
   providers: [
     CreateEntityDefinitionUseCase,
+    GetEntityDefinitionuseCase,
+    ListEntityDefinitionUseCase,
     {
       provide: ENTITY_DEFINITION_REPOSITORY_TOKEN,
       useClass: TypeOrmEntityDefinitionRepository,

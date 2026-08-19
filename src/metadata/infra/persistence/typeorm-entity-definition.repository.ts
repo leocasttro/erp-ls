@@ -37,6 +37,14 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
     return this.toDomainEntity(found);
   }
 
+  async list(tenantId: string): Promise<EntityDefinition[]> {
+    const models = await this.ormRepository.find({
+      where: { tenantId },
+    });
+
+    return models.map((model) => this.toDomainEntity(model));
+  }
+
   private toOrmModel(domain: EntityDefinition): EntityDefinitionModel {
     const model = new EntityDefinitionModel();
     model.id = domain.id;
