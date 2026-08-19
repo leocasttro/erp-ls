@@ -1,5 +1,7 @@
 import { BaseEntity } from '@/core/domain/entities/base.entity';
 import { FieldDefinition } from './field-definition.entity';
+import { FormLayout } from './form-layout.entity';
+import { EntityRelation } from './entity-relation.entity';
 
 export class EntityDefinition extends BaseEntity {
   tenantId!: string;
@@ -11,6 +13,9 @@ export class EntityDefinition extends BaseEntity {
   isAuditable!: boolean;
   hasWorkflow!: boolean;
   fields!: FieldDefinition[];
+  formLayouts!: FormLayout[];
+  sourceRelations!: EntityRelation[];
+  targetRelations!: EntityDefinition[];
 
   constructor(partial: Partial<EntityDefinition>) {
     super(partial.id, partial.createdAt, partial.updatedAt);
@@ -20,6 +25,9 @@ export class EntityDefinition extends BaseEntity {
     this.isAuditable = partial.isAuditable ?? true;
     this.hasWorkflow = partial.hasWorkflow ?? false;
     this.fields = partial.fields ?? [];
+    this.formLayouts = partial.formLayouts ?? [];
+    this.sourceRelations = partial.sourceRelations ?? [];
+    this.targetRelations = partial.targetRelations ?? [];
     this.tableName = partial.tableName ?? 'dynamic_records';
   }
 

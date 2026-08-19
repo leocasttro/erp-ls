@@ -1,5 +1,7 @@
 import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
 import { FieldDefinitionModel } from './field-definition.model';
+import { EntityRelationModel } from './entity-relation.model';
+import { FormLayoutModel } from './form-layout.model';
 
 @Entity('entity_definitions')
 export class EntityDefinitionModel {
@@ -41,4 +43,19 @@ export class EntityDefinitionModel {
     cascade: true,
   })
   fields!: FieldDefinitionModel[];
+
+  @OneToMany(() => FormLayoutModel, (layout) => layout.entityDefinition, {
+    cascade: true,
+  })
+  formLayouts!: FormLayoutModel[];
+
+  @OneToMany(() => EntityRelationModel, (relation) => relation.sourceEntity, {
+    cascade: true,
+  })
+  sourceRelations!: EntityRelationModel[];
+
+  @OneToMany(() => EntityRelationModel, (relation) => relation.targetEntity, {
+    cascade: true,
+  })
+  targetRelations!: EntityRelationModel[];
 }

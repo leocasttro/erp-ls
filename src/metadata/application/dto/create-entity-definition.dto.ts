@@ -1,4 +1,5 @@
 import { FieldType } from '@/metadata/enums/field-type.enum';
+import { RelationType } from '@/metadata/enums/relation-type.enum';
 
 export interface CreateFieldDto {
   technicalName: string;
@@ -15,6 +16,20 @@ export interface CreateFieldDto {
   onDeleteAction?: string;
 }
 
+export interface CreateFormLayoutDto {
+  name: string;
+  isDefault?: boolean;
+  layoutConfig: Record<string, unknown>;
+}
+
+export interface CreateEntityRelationDto {
+  targetEntityId: string;
+  relationType: RelationType;
+  foreignKeyName: string;
+  cascadeDelete?: boolean;
+  label?: string;
+}
+
 export interface CreateEntityDefinitionDto {
   tenantId: string;
   technicalName: string;
@@ -25,4 +40,6 @@ export interface CreateEntityDefinitionDto {
   isAuditable?: boolean;
   hasWorkflow?: boolean;
   fields: CreateFieldDto[];
+  formLayouts?: CreateFormLayoutDto[];
+  relations?: CreateEntityRelationDto[];
 }

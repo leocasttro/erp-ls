@@ -6,9 +6,18 @@ import { TypeOrmEntityDefinitionRepository } from './persistence/typeorm-entity-
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntityDefinitionModel } from './persistence/typeorm/entity-definition.model';
 import { FieldDefinitionModel } from './persistence/typeorm/field-definition.model';
+import { FormLayoutModel } from './persistence/typeorm/form-layout.model';
+import { EntityRelationModel } from './persistence/typeorm/entity-relation.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EntityDefinitionModel, FieldDefinitionModel])],
+  imports: [
+    TypeOrmModule.forFeature([
+      EntityDefinitionModel,
+      FieldDefinitionModel,
+      FormLayoutModel,
+      EntityRelationModel,
+    ]),
+  ],
   controllers: [EntityDefinitionController],
   providers: [
     CreateEntityDefinitionUseCase,

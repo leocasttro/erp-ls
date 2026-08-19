@@ -6,6 +6,8 @@ import {
 } from '../ports/entity-definition.repository';
 import { EntityDefinition } from '@/metadata/entities/entity-definition.entity';
 import { FieldDefinition } from '@/metadata/entities/field-definition.entity';
+import { EntityRelation } from '@/metadata/entities/entity-relation.entity';
+import { FormLayout } from '@/metadata/entities/form-layout.entity';
 
 @Injectable()
 export class CreateEntityDefinitionUseCase {
@@ -52,6 +54,34 @@ export class CreateEntityDefinitionUseCase {
       });
 
       newEntity.addField(field);
+    }
+
+    if (dto.formLayouts) {
+      for (const layoutDto of dto.formLayouts) {
+        newEntity.formLayouts.push(
+          new FormLayout({
+            tenantId: dto.tenantId,
+            name: layoutDto.name,
+            isDefault: layoutDto.isDefault ?? false,
+            layoutConfig: layoutDto.layoutConfig,
+          }),
+        );
+      }
+    }
+
+    if (dto.relations) {
+      for (const relDto of dto.relations) {
+        newEntity.sourceRelations.push(
+          new EntityRelation({
+            tenantId: dto.tenantId,
+            targetEntityId: relDto.targetEntityId,
+            relationType: relDto.relationType,
+            foreignKeyName: relDto.foreignKeyName,
+            cascadeDelete: relDto.cascadeDelete,
+            label: relDto.label,
+          }),
+        );
+      }
     }
 
     await this.repository.save(newEntity);

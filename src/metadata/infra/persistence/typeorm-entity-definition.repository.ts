@@ -6,6 +6,10 @@ import { Repository } from 'typeorm';
 import { EntityDefinition } from '@/metadata/entities/entity-definition.entity';
 import { FieldDefinitionModel } from './typeorm/field-definition.model';
 import { FieldDefinition } from '@/metadata/entities/field-definition.entity';
+import { FormLayoutModel } from './typeorm/form-layout.model';
+import { EntityRelationModel } from './typeorm/entity-relation.model';
+import { FormLayout } from '@/metadata/entities/form-layout.entity';
+import { EntityRelation } from '@/metadata/entities/entity-relation.entity';
 
 @Injectable()
 export class TypeOrmEntityDefinitionRepository implements EntityDefinitionRepository {
@@ -25,7 +29,7 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
   ): Promise<EntityDefinition | null> {
     const found = await this.ormRepository.findOne({
       where: { technicalName, tenantId },
-      relations: { fields: true },
+      relations: { fields: true, formLayouts: true, sourceRelations: true, targetRelations: true },
     });
 
     if (!found) return null;
@@ -67,6 +71,32 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
       return fieldModel;
     });
 
+    model.formLayouts = domain.formLayouts.map((fl) => {
+      const layoutModel = new FormLayoutModel();
+      layoutModel.id = fl.id;
+      layoutModel.tenantId = fl.tenantId;
+      layoutModel.name = fl.name;
+      layoutModel.isDefault = fl.isDefault;
+      layoutModel.layoutConfig = fl.layoutConfig;
+      layoutModel.createdAt = fl.createdAt;
+      layoutModel.updatedAt = fl.updatedAt;
+      return layoutModel;
+    });
+
+    model.sourceRelations = domain.sourceRelations.map((sr) => {
+      const relationModel = new EntityRelationModel();
+      relationModel.id = sr.id;
+      relationModel.tenantId = sr.tenantId;
+      relationModel.targetEntityId = sr.targetEntityId;
+      relationModel.relationType = sr.relationType;
+      relationModel.foreignKeyName = sr.foreignKeyName;
+      relationModel.cascadeDelete = sr.cascadeDelete;
+      relationModel.label = sr.label;
+      relationModel.createdAt = sr.createdAt;
+      relationModel.updatedAt = sr.updatedAt;
+      return relationModel;
+    });
+
     return model;
   }
 
@@ -106,6 +136,36 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
         }),
       );
     });
+
+    entity.formLayouts = model.formLayouts.map(
+      (fl) =>
+        new FormLayout({
+          id: fl.id,
+          tenantId: fl.tenantId,
+          entityDefinitionId: fl.entityDefinitionId,
+          name: fl.name,
+          isDefault: fl.isDefault,
+          layoutConfig: fl.layoutConfig,
+          createdAt: fl.createdAt,
+          updatedAt: fl.updatedAt,
+        }),
+    );
+
+    entity.sourceRelations = model.sourceRelations.map(
+      (sr) =>
+        new EntityRelation({
+          id: sr.id,
+          tenantId: sr.tenantId,
+          sourceEntityId: sr.sourceEntityId,
+          targetEntityId: sr.targetEntityId,
+          relationType: sr.relationType,
+          foreignKeyName: sr.foreignKeyName,
+          cascadeDelete: sr.cascadeDelete,
+          label: sr.label,
+          createdAt: sr.createdAt,
+          updatedAt: sr.updatedAt,
+        }),
+    );
 
     return entity;
   }
