@@ -13,14 +13,35 @@ export class FieldDefinitionModel {
   @Column()
   label!: string;
 
-  @Column({ type: 'varchar' })
-  type!: FieldType;
+  @Column({ name: 'type', type: 'varchar' })
+  fieldType!: FieldType;
 
   @Column({ name: 'is_required', default: false })
   isRequired!: boolean;
 
   @Column({ name: 'is_unique', default: false })
   isUnique!: boolean;
+
+  @Column({ name: 'is_indexed', default: false })
+  isIndexed!: boolean;
+
+  @Column({ name: 'is_calculated', default: false })
+  isCalculated!: boolean;
+
+  @Column({ name: 'formula_expression', nullable: true })
+  formulaExpression?: string;
+
+  @Column({ name: 'default_value', nullable: true })
+  defaultValue?: string;
+
+  @Column({ name: 'validation_rules', type: 'jsonb', nullable: true })
+  validationRules?: Record<string, unknown>;
+
+  @Column({ name: 'lookup_entity_id', type: 'uuid', nullable: true })
+  lookupEntityId?: string;
+
+  @Column({ name: 'on_delete_action', nullable: true })
+  onDeleteAction?: string;
 
   @Column({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;

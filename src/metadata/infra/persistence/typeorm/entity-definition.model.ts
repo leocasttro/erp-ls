@@ -18,11 +18,17 @@ export class EntityDefinitionModel {
   @Column({ name: 'table_name' })
   tableName!: string;
 
+  @Column({ name: 'module_category', default: true })
+  moduleCategory?: string;
+
   @Column({ name: 'is_custom', default: true })
   isCustom!: boolean;
 
   @Column({ name: 'is_auditable', default: true })
   isAuditable!: boolean;
+
+  @Column({ name: 'has_workflow', default: false })
+  hasWorkflow!: boolean;
 
   @Column({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;

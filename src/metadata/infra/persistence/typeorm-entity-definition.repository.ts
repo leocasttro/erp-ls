@@ -40,8 +40,10 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
     model.technicalName = domain.technicalName;
     model.displayName = domain.displayName;
     model.tableName = domain.tableName;
+    model.moduleCategory = domain.moduleCategory;
     model.isCustom = domain.isCustom;
     model.isAuditable = domain.isAuditable;
+    model.hasWorkflow = domain.hasWorkflow;
     model.createdAt = domain.createdAt;
     model.updatedAt = domain.updatedAt;
 
@@ -50,9 +52,16 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
       fieldModel.id = f.id;
       fieldModel.technicalName = f.technicalName;
       fieldModel.label = f.label;
-      fieldModel.type = f.type;
+      fieldModel.fieldType = f.fieldType;
       fieldModel.isRequired = f.isRequired;
       fieldModel.isUnique = f.isUnique;
+      fieldModel.isIndexed = f.isIndexed;
+      fieldModel.isCalculated = f.isCalculated;
+      fieldModel.formulaExpression = f.formulaExpression;
+      fieldModel.defaultValue = f.defaultValue;
+      fieldModel.validationRules = f.validationRules;
+      fieldModel.lookupEntityId = f.lookupEntityId;
+      fieldModel.onDeleteAction = f.onDeleteAction;
       fieldModel.createdAt = f.createdAt;
       fieldModel.updatedAt = f.updatedAt;
       return fieldModel;
@@ -68,8 +77,10 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
       technicalName: model.technicalName,
       displayName: model.displayName,
       tableName: model.tableName,
+      moduleCategory: model.moduleCategory,
       isCustom: model.isCustom,
       isAuditable: model.isAuditable,
+      hasWorkflow: model.hasWorkflow,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     });
@@ -80,9 +91,16 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
           id: f.id,
           technicalName: f.technicalName,
           label: f.label,
-          type: f.type,
+          fieldType: f.fieldType,
           isRequired: f.isRequired,
           isUnique: f.isUnique,
+          isIndexed: f.isIndexed,
+          isCalculated: f.isCalculated,
+          formulaExpression: f.formulaExpression,
+          defaultValue: f.defaultValue,
+          validationRules: f.validationRules,
+          lookupEntityId: f.lookupEntityId,
+          onDeleteAction: f.onDeleteAction,
           createdAt: f.createdAt,
           updatedAt: f.updatedAt,
         }),
