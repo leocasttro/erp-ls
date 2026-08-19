@@ -6,8 +6,10 @@ export class EntityDefinition extends BaseEntity {
   technicalName!: string;
   displayName!: string;
   tableName!: string;
+  moduleCategory?: string;
   isCustom!: boolean;
   isAuditable!: boolean;
+  hasWorkflow!: boolean;
   fields!: FieldDefinition[];
 
   constructor(partial: Partial<EntityDefinition>) {
@@ -16,6 +18,7 @@ export class EntityDefinition extends BaseEntity {
 
     this.isCustom = partial.isCustom ?? true;
     this.isAuditable = partial.isAuditable ?? true;
+    this.hasWorkflow = partial.hasWorkflow ?? false;
     this.fields = partial.fields ?? [];
     this.tableName = partial.tableName ?? 'dynamic_records';
   }
