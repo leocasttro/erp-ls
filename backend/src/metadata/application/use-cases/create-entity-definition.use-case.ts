@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, ConflictException } from '@nestjs/common';
 import { CreateEntityDefinitionDto } from '../dto/create-entity-definition.dto';
 import {
   EntityDefinitionRepository,
@@ -23,7 +23,7 @@ export class CreateEntityDefinitionUseCase {
     );
 
     if (existingEntity) {
-      throw new Error(`A entidade '${dto.technicalName}' já existe para este tenant.`);
+      throw new ConflictException(`A entidade '${dto.technicalName}' já existe no sistema. Escolha outro nome.`);
     }
 
     const newEntity = new EntityDefinition({

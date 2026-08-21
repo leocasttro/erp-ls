@@ -2,8 +2,9 @@ import { CreateEntityDefinitionDto } from '@/metadata/application/dto/create-ent
 import { CreateEntityDefinitionUseCase } from '@/metadata/application/use-cases/create-entity-definition.use-case';
 import { GetEntityDefinitionuseCase } from '@/metadata/application/use-cases/get-entity-definition.use-case';
 import { ListEntityDefinitionUseCase } from '@/metadata/application/use-cases/list-entity-definition.use-case';
+import { UpdateEntityDefinitionUseCase } from '@/metadata/application/use-cases/update-entity-definition.use-case';
 import { EntityDefinition } from '@/metadata/entities/entity-definition.entity';
-import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Put } from '@nestjs/common';
 
 @Controller('api/v1/metadata/entities')
 export class EntityDefinitionController {
@@ -11,7 +12,31 @@ export class EntityDefinitionController {
     private readonly createEntityUseCase: CreateEntityDefinitionUseCase,
     private readonly getUseCase: GetEntityDefinitionuseCase,
     private readonly listUseCase: ListEntityDefinitionUseCase,
+    private readonly updateUseCase: UpdateEntityDefinitionUseCase,
   ) {}
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Headers('x-tenant-id') tenantId: string,
+    @Body() dto: Omit<CreateEntityDefinitionDto, 'tenantId'>,
+  ): Promise<{ message: string; data: EntityDefinition }> {
+    if (!tenantId) {
+      throw new Error('Tenant ID é obrigatório no cabeçalho (x-tenant-id)');
+    }
+
+    const payload: CreateEntityDefinitionDto = {
+      ...dto,
+      tenantId,
+    };
+
+    const result = await this.updateUseCase.execute(id, payload);
+
+    return {
+      message: 'Formulário atualizado com sucesso!',
+      data: result,
+    };
+  }
 
   @Post()
   async create(

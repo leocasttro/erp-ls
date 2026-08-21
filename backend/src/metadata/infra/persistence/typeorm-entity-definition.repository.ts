@@ -37,9 +37,19 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
     return this.toDomainEntity(found);
   }
 
+  async findByIdAndTenant(id: string, tenantId: string): Promise<EntityDefinition | null> {
+    const found = await this.ormRepository.findOne({
+      where: { id, tenantId },
+      relations: { fields: true, formLayouts: true, sourceRelations: true, targetRelations: true },
+    });
+    if (!found) return null;
+    return this.toDomainEntity(found);
+  }
+
   async list(tenantId: string): Promise<EntityDefinition[]> {
     const models = await this.ormRepository.find({
       where: { tenantId },
+      relations: { fields: true, formLayouts: true, sourceRelations: true, targetRelations: true },
     });
 
     return models.map((model) => this.toDomainEntity(model));

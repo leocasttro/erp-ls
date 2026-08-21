@@ -49,9 +49,7 @@ export class FieldDefinitionModel {
   @Column({ name: 'update_at', type: 'timestamp' })
   updatedAt!: Date;
 
-  @ManyToOne(() => EntityDefinitionModel, (entity) => entity.fields, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => EntityDefinitionModel, (entity) => entity.fields, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'entity_definition_id' })
   entityDefinition!: EntityDefinitionModel;
 }

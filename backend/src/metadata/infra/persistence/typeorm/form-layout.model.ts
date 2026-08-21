@@ -28,7 +28,7 @@ export class FormLayoutModel {
   updatedAt!: Date;
 
   // Relação com a EntityDefinitionModel
-  @ManyToOne(() => EntityDefinitionModel, (entity) => entity.formLayouts)
+  @ManyToOne(() => EntityDefinitionModel, (entity) => entity.formLayouts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'entity_definition_id' })
   entityDefinition!: EntityDefinitionModel;
 }
