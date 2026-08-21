@@ -4,9 +4,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenusModule } from './menus/infra/menus.module';
 import { RecordsModule } from './records/infra/records.module';
+import { StockModule } from './stock/stock.module';
+
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -27,6 +31,7 @@ import { RecordsModule } from './records/infra/records.module';
     MetadaModule,
     MenusModule,
     RecordsModule,
+    StockModule,
   ],
   controllers: [],
   providers: [],
