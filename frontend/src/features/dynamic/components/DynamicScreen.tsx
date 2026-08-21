@@ -5,6 +5,36 @@ import { Database, Plus, Edit2, Trash2, Printer, Search, Filter, RefreshCw } fro
 const API_URL = 'http://localhost:3000/api/v1';
 const TENANT_ID = '550e8400-e29b-41d4-a716-446655440000';
 
+function ReferenceSelect({ field }: { field: any }) {
+  const [options, setOptions] = useState<any[]>([]);
+  useEffect(() => {
+    if (field.lookupEntityId) {
+      fetch(`${API_URL}/records/${field.lookupEntityId}`, { headers: { 'x-tenant-id': TENANT_ID } })
+        .then(res => res.json())
+        .then(json => setOptions(json.data || []));
+    }
+  }, [field.lookupEntityId]);
+
+  return (
+    <div className="relative">
+      <select 
+        name={field.technicalName}
+        required={field.isRequired}
+        className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none bg-slate-50"
+      >
+        <option value="">Selecione...</option>
+        {options.map((opt: any) => (
+          <option key={opt.id} value={opt.id}>
+            {/* Tenta achar um campo 'nome' ou 'descricao' para mostrar no select */}
+            {opt.data?.nome || opt.data?.descricao || opt.data?.label || opt.data?.titulo || opt.id.split('-')[0]}
+          </option>
+        ))}
+      </select>
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">▼</div>
+    </div>
+  );
+}
+
 export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
   const params = useParams();
   const entityId = propEntityId || params.entityId;
@@ -13,6 +43,17 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
   const [viewMode, setViewMode] = useState<'BROWSE' | 'FORM'>('BROWSE');
   const [activeTab, setActiveTab] = useState<string>('');
   const [records, setRecords] = useState<any[]>([]);
+  const [referenceDictionaries, setReferenceDictionaries] = useState<Record<string, Record<string, string>>>({});
+
+  const fetchRecords = () => {
+    fetch(`${API_URL}/records/${entityId}`, { headers: { 'x-tenant-id': TENANT_ID } })
+      .then(res => res.json())
+      .then(json => {
+        if (json.data) {
+          setRecords(json.data.map((r: any) => ({ ...r.data, _recordId: r.id })));
+        }
+      });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -25,9 +66,52 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
         if (found?.formLayouts?.[0]?.layoutConfig?.tabs?.length > 0) {
           setActiveTab(found.formLayouts[0].layoutConfig.tabs[0].name);
         }
+        fetchRecords();
+
+        // NOVO: Buscar dicionários para campos REFERENCE (Para mostrar o NOME na Grid em vez do ID)
+        if (found && found.fields) {
+          const refFields = found.fields.filter((f: any) => f.fieldType === 'REFERENCE' && f.lookupEntityId);
+          refFields.forEach((field: any) => {
+            fetch(`${API_URL}/records/${field.lookupEntityId}`, { headers: { 'x-tenant-id': TENANT_ID } })
+              .then(res => res.json())
+              .then(json => {
+                if (json.data) {
+                  const dict: Record<string, string> = {};
+                  json.data.forEach((r: any) => {
+                    dict[r.id] = r.data?.nome || r.data?.descricao || r.data?.label || r.data?.titulo || r.id.split('-')[0];
+                  });
+                  setReferenceDictionaries(prev => ({ ...prev, [field.technicalName]: dict }));
+                }
+              });
+          });
+        }
       })
       .finally(() => setLoading(false));
   }, [entityId]);
+
+  const handleSaveRecord = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const dataObj = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch(`${API_URL}/records/${entityId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-tenant-id': TENANT_ID },
+        body: JSON.stringify(dataObj)
+      });
+      const json = await res.json();
+      if (res.ok) {
+        alert('Salvo com sucesso!');
+        setViewMode('BROWSE');
+        fetchRecords(); // Refresh the grid
+      } else {
+        alert('Erro ao salvar: ' + json.message);
+      }
+    } catch (err) {
+      alert('Erro de conexão ao salvar.');
+    }
+  };
 
   if (loading) return <div className="p-6 text-slate-500">Carregando estrutura da tela...</div>;
   if (!entityDef) return <div className="p-6 text-red-500">Erro: Formulário não encontrado no banco.</div>;
@@ -65,16 +149,7 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
             className="px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
           />
         ) : field.fieldType === 'REFERENCE' ? (
-          <div className="relative">
-            <select 
-              name={field.technicalName}
-              required={field.isRequired}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm appearance-none bg-slate-50"
-            >
-              <option value="">Buscar registro relacionado...</option>
-            </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">▼</div>
-          </div>
+          <ReferenceSelect field={field} />
         ) : (
           <input 
             type="text" 
@@ -176,9 +251,17 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
                         <td className="p-4 text-center">
                           <input type="radio" name="grid_select" className="w-4 h-4 border-slate-300 text-blue-600 focus:ring-blue-500" />
                         </td>
-                        {gridColumns.map((col: any) => (
-                          <td key={col.technicalName} className="p-4 text-slate-700 whitespace-nowrap">{row[col.technicalName]}</td>
-                        ))}
+                        {gridColumns.map((col: any) => {
+                          let displayValue = row[col.technicalName];
+                          if (col.fieldType === 'REFERENCE' && referenceDictionaries[col.technicalName]) {
+                             displayValue = referenceDictionaries[col.technicalName][displayValue] || displayValue;
+                          }
+                          return (
+                            <td key={col.technicalName} className="p-4 text-slate-700 whitespace-nowrap">
+                              {displayValue}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))
                   )}
@@ -188,7 +271,7 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
           </div>
         ) : (
           /* FORMULÁRIO COM ABAS SHADCN-STYLE */
-          <div className="flex flex-col h-full">
+          <form className="flex flex-col h-full" onSubmit={handleSaveRecord}>
             {hasTabs ? (
               <>
                 <div className="flex gap-2 border-b border-slate-200 mb-6">
@@ -207,29 +290,33 @@ export function DynamicScreen({ propEntityId }: { propEntityId?: string }) {
                     </button>
                   ))}
                 </div>
-                <form className="grid grid-cols-12 gap-6">
+                <div className="grid grid-cols-12 gap-6">
                   {layoutConfig.tabs.find((t: any) => t.name === activeTab)?.fields.map((fieldObj: any, idx: number) => (
                     <React.Fragment key={idx}>{renderField(fieldObj)}</React.Fragment>
                   ))}
-                </form>
+                </div>
               </>
             ) : (
-              <form className="grid grid-cols-12 gap-6">
+              <div className="grid grid-cols-12 gap-6">
                 {entityDef.fields?.map((f: any, idx: number) => (
                   <React.Fragment key={idx}>{renderField(f.technicalName)}</React.Fragment>
                 ))}
-              </form>
+              </div>
             )}
 
             <div className="mt-10 pt-6 border-t border-slate-200 flex justify-end gap-3">
-               <button className="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-6 py-2.5 rounded-md text-sm font-bold shadow-sm transition-colors">
+               <button 
+                 type="button" 
+                 onClick={() => setViewMode('BROWSE')}
+                 className="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-6 py-2.5 rounded-md text-sm font-bold shadow-sm transition-colors"
+               >
                  Cancelar
                </button>
-               <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-md text-sm font-bold shadow-sm transition-colors">
+               <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-md text-sm font-bold shadow-sm transition-colors">
                  Salvar e Concluir
                </button>
             </div>
-          </div>
+          </form>
         )}
       </div>
     </div>
