@@ -3,4 +3,5 @@ export enum FieldType {
   NUMBER = 'NUMBER',
   DATE = 'DATE',
   REFERENCE = 'REFERENCE',
+  GRID = 'GRID',
 }

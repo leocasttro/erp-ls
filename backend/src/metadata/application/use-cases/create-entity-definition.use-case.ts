@@ -53,6 +53,7 @@ export class CreateEntityDefinitionUseCase {
         validationRules: fieldDto.validationRules,
         lookupEntityId: fieldDto.lookupEntityId,
         onDeleteAction: fieldDto.onDeleteAction,
+        options: fieldDto.options,
       });
 
       newEntity.addField(field);

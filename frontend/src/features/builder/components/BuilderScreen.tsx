@@ -18,9 +18,9 @@ export function BuilderScreen({ propMenuId, propGroupName }: { propMenuId?: stri
   
   // Estados do Menu
   const [menuName, setMenuName] = useState('');
-  const [menuIcon, setMenuIcon] = useState('folder');
-  const [menuOrder, setMenuOrder] = useState<number>(1);
-  const [menuIsActive, setMenuIsActive] = useState(true);
+  const [menuIcon, setMenuIcon] = useState('settings');
+  const [menuOrder] = useState<number>(1);
+  const [menuIsActive] = useState(true);
   
   // Estados do Formulário (Edição/Criação)
   const [selectedEntityId, setSelectedEntityId] = useState<string>('');

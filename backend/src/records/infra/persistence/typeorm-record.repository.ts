@@ -22,4 +22,20 @@ export class TypeOrmRecordRepository implements RecordRepository {
       order: { createdAt: 'DESC' },
     });
   }
+
+  async findById(tenantId: string, recordId: string): Promise<RecordModel | null> {
+    return this.repository.findOne({ where: { id: recordId, tenantId } });
+  }
+
+  async update(tenantId: string, recordId: string, data: Record<string, unknown>): Promise<RecordModel> {
+    const record = await this.repository.findOne({ where: { id: recordId, tenantId } });
+    if (!record) throw new Error('Record not found');
+    
+    record.data = data;
+    return this.repository.save(record);
+  }
+
+  async delete(tenantId: string, recordId: string): Promise<void> {
+    await this.repository.delete({ id: recordId, tenantId });
+  }
 }
