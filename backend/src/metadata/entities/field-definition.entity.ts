@@ -18,6 +18,7 @@ export class FieldDefinition extends BaseEntity {
   validationRules?: Record<string, unknown>;
   lookupEntityId?: string;
   onDeleteAction?: string;
+  options?: Record<string, unknown>;
 
   constructor(partial: Partial<FieldDefinition>) {
     super(partial.id, partial.createdAt, partial.updatedAt);

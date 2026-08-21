@@ -43,6 +43,9 @@ export class FieldDefinitionModel {
   @Column({ name: 'on_delete_action', nullable: true })
   onDeleteAction?: string;
 
+  @Column({ name: 'options', type: 'jsonb', nullable: true })
+  options?: Record<string, unknown>;
+
   @Column({ name: 'created_at', type: 'timestamp' })
   createdAt!: Date;
 

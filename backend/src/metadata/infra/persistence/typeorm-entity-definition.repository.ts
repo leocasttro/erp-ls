@@ -84,6 +84,7 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
       fieldModel.validationRules = f.validationRules;
       fieldModel.lookupEntityId = f.lookupEntityId;
       fieldModel.onDeleteAction = f.onDeleteAction;
+      fieldModel.options = f.options;
       fieldModel.createdAt = f.createdAt;
       fieldModel.updatedAt = f.updatedAt;
       return fieldModel;
@@ -149,6 +150,7 @@ export class TypeOrmEntityDefinitionRepository implements EntityDefinitionReposi
           validationRules: f.validationRules,
           lookupEntityId: f.lookupEntityId,
           onDeleteAction: f.onDeleteAction,
+          options: f.options,
           createdAt: f.createdAt,
           updatedAt: f.updatedAt,
         }),

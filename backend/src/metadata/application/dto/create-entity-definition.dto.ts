@@ -14,6 +14,7 @@ export interface CreateFieldDto {
   validationRules?: Record<string, unknown>;
   lookupEntityId?: string;
   onDeleteAction?: string;
+  options?: Record<string, unknown>;
 }
 
 export interface CreateFormLayoutDto {
