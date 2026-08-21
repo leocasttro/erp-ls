@@ -23,7 +23,9 @@ export class CreateEntityDefinitionUseCase {
     );
 
     if (existingEntity) {
-      throw new ConflictException(`A entidade '${dto.technicalName}' já existe no sistema. Escolha outro nome.`);
+      throw new ConflictException(
+        `A entidade '${dto.technicalName}' já existe no sistema. Escolha outro nome.`,
+      );
     }
 
     const newEntity = new EntityDefinition({

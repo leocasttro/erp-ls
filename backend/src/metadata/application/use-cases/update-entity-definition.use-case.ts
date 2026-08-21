@@ -24,7 +24,7 @@ export class UpdateEntityDefinitionUseCase {
 
     // Atualiza os dados principais
     existingEntity.displayName = dto.displayName;
-    
+
     // Recria os campos (TypeORM deletará os antigos devido ao orphanedRowAction: 'delete')
     existingEntity.fields = dto.fields.map((fieldDto) => {
       return new FieldDefinition({
