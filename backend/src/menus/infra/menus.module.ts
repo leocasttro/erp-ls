@@ -8,6 +8,7 @@ import { MENU_REPOSITORY_TOKEN } from '../application/ports/menu.repository';
 import { TypeOrmMenuRepository } from './persistence/typeorm-menu.repository';
 import { MenuController } from './controllers/menu.controller';
 import { UpdateMenuUseCase } from '../application/use-cases/update-menu.use-case';
+import { ListMenusUseCase } from '../application/use-cases/list-menus.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([MenuModel, MenuGroupModel, MenuItemModel])],
@@ -15,6 +16,7 @@ import { UpdateMenuUseCase } from '../application/use-cases/update-menu.use-case
   providers: [
     CreateMenuUseCase,
     UpdateMenuUseCase,
+    ListMenusUseCase,
     {
       provide: MENU_REPOSITORY_TOKEN,
       useClass: TypeOrmMenuRepository,

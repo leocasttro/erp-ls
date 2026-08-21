@@ -42,6 +42,15 @@ export class TypeOrmMenuRepository implements MenuRepository {
     return this.toDomainEntity(model);
   }
 
+  async findAllByTenant(tenantId: string): Promise<Menu[]> {
+    const models = await this.ormRepository.find({
+      where: { tenantId },
+      relations: { groups: { items: true } },
+      order: { order: 'ASC', groups: { order: 'ASC', items: { order: 'ASC' } } },
+    });
+    return models.map((model) => this.toDomainEntity(model));
+  }
+
   private toOrmModel(domain: Menu): MenuModel {
     const model = new MenuModel();
     model.id = domain.id;

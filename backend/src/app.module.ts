@@ -3,6 +3,7 @@ import { MetadaModule } from './metadata/infra/metadata.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenusModule } from './menus/infra/menus.module';
+import { RecordsModule } from './records/infra/records.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MenusModule } from './menus/infra/menus.module';
     }),
     MetadaModule,
     MenusModule,
+    RecordsModule,
   ],
   controllers: [],
   providers: [],

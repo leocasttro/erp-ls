@@ -41,11 +41,13 @@ export class EntityDefinitionModel {
   // Carrega os campos quando buscarmos o formulário no banco
   @OneToMany(() => FieldDefinitionModel, (field) => field.entityDefinition, {
     cascade: true,
+    orphanedRowAction: 'delete',
   })
   fields!: FieldDefinitionModel[];
 
   @OneToMany(() => FormLayoutModel, (layout) => layout.entityDefinition, {
     cascade: true,
+    orphanedRowAction: 'delete',
   })
   formLayouts!: FormLayoutModel[];
 

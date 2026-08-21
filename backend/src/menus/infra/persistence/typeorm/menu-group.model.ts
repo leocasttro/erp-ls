@@ -25,7 +25,7 @@ export class MenuGroupModel {
   @Column({ name: 'updated_at', type: 'timestamp' })
   updatedAt!: Date;
 
-  @ManyToOne(() => MenuModel, (menu) => menu.groups)
+  @ManyToOne(() => MenuModel, (menu) => menu.groups, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'menu_id' })
   menu!: MenuModel;
 

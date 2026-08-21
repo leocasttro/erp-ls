@@ -10,6 +10,7 @@ import { FormLayoutModel } from './persistence/typeorm/form-layout.model';
 import { EntityRelationModel } from './persistence/typeorm/entity-relation.model';
 import { GetEntityDefinitionuseCase } from '../application/use-cases/get-entity-definition.use-case';
 import { ListEntityDefinitionUseCase } from '../application/use-cases/list-entity-definition.use-case';
+import { UpdateEntityDefinitionUseCase } from '../application/use-cases/update-entity-definition.use-case';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ListEntityDefinitionUseCase } from '../application/use-cases/list-entit
     CreateEntityDefinitionUseCase,
     GetEntityDefinitionuseCase,
     ListEntityDefinitionUseCase,
+    UpdateEntityDefinitionUseCase,
     {
       provide: ENTITY_DEFINITION_REPOSITORY_TOKEN,
       useClass: TypeOrmEntityDefinitionRepository,
