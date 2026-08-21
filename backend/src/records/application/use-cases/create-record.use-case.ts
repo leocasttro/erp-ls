@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RECORD_REPOSITORY, RecordRepository } from '../ports/record.repository';
 import { RecordModel } from '../../infra/persistence/typeorm/record.model';
 import * as crypto from 'crypto';
@@ -8,6 +9,7 @@ export class CreateRecordUseCase {
   constructor(
     @Inject(RECORD_REPOSITORY)
     private readonly recordRepository: RecordRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(
@@ -21,6 +23,11 @@ export class CreateRecordUseCase {
       entityDefinitionId,
       data,
     };
-    return this.recordRepository.create(record);
+    const savedRecord = await this.recordRepository.create(record);
+
+    // Dispara o evento de negócio (O gatilho!)
+    this.eventEmitter.emit(`record.created`, { tenantId, entityDefinitionId, record: savedRecord });
+
+    return savedRecord;
   }
 }
